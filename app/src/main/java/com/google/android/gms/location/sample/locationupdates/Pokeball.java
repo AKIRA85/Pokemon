@@ -38,11 +38,13 @@ public class Pokeball extends ActionBarActivity {
         db.insert(CaptureList.TABLE_NAME, null, contentValues );
         Intent intent = new Intent(this, Success.class);
         intent.putExtra("pokemon_name", mIntent.getStringExtra("pokemon"));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 
     public void noButtonHandler(View view){
         Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 }
