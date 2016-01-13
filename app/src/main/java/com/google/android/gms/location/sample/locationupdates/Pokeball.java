@@ -18,23 +18,27 @@ import com.google.android.gms.location.sample.locationupdates.PokemonContract.*;
 public class Pokeball extends ActionBarActivity {
 
     Intent mIntent;
+    String mPokemonName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pokeball);
         mIntent = getIntent();
-        String pokemonName = mIntent.getStringExtra("pokemon");
-        Log.i("image", "pokeball : "+pokemonName);
+        mPokemonName = mIntent.getStringExtra("pokemon");
+        Log.i("image", "pokeball : "+mPokemonName);
         TextView tv = (TextView) findViewById(R.id.question);
-        tv.setText("Do you want to catch "+pokemonName+"?");
+        tv.setText("Do you want to catch "+mPokemonName+"?");
     }
 
     public void yesButtonHandler(View view){
         SQLiteDatabase db = (new PokemonDatabase(this)).getWritableDatabase();
         int rank = mIntent.getIntExtra("rank", 0);
+        int typeID = mIntent.getIntExtra("type_ID", 0);
         ContentValues contentValues = new ContentValues();
         contentValues.put(CaptureList.RANK, rank);
         contentValues.put(CaptureList.LEVEL, 1);
+        contentValues.put(CaptureList.NAME, mPokemonName);
+        contentValues.put(CaptureList.TYPE_ID, typeID);
         db.insert(CaptureList.TABLE_NAME, null, contentValues );
         Intent intent = new Intent(this, Success.class);
         intent.putExtra("pokemon_name", mIntent.getStringExtra("pokemon"));

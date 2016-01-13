@@ -26,7 +26,9 @@ public final class PokemonContract {
 
     public static abstract class CaptureList implements BaseColumns{
         public static final String TABLE_NAME = "CaptureList";
-        public static final String RANK = "RANK";
+        public static final String RANK = "Rank";
         public static final String LEVEL = "Level";
+        public static final String NAME = "Name";
+        public static final String TYPE_ID = "Type_ID";
     }
 }

@@ -14,6 +14,7 @@ public class PokemonDatabase extends SQLiteOpenHelper {
 
     private static final String POKEMON_TABLE_CREATE =
             "CREATE TABLE " + Pokemon.TABLE_NAME + " (" +
+                    Pokemon._ID + " INT, " +
                     Pokemon.RANK + " INT, " +
                     Pokemon.LEVEL1 + " TEXT, " +
                     Pokemon.LEVEL2 + " TEXT, " +
@@ -61,8 +62,11 @@ public class PokemonDatabase extends SQLiteOpenHelper {
 
     private static final String CAPTURE_TABLE_CREATE =
             "CREATE TABLE " + CaptureList.TABLE_NAME + " (" +
+                    CaptureList._ID + " INT, " +
                     CaptureList.RANK + " INT, " +
-                    CaptureList.LEVEL + " INT" +
+                    CaptureList.LEVEL + " INT," +
+                    CaptureList.NAME + " TEXT," +
+                    CaptureList.TYPE_ID + " INT" +
                     " );";
 
 

@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements
     protected String mPokemonName;
 
     protected int mPokemonRank;
+    protected int mPokemonTypeID;
 
     /**
      * Tracks the status of the location updates request. Value changes when the user presses the
@@ -162,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main2, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -187,12 +188,9 @@ public class MainActivity extends AppCompatActivity implements
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
+        if (id == R.id.nav_capture_list) {
+            Intent intent = new Intent(this, CaptureListActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
@@ -498,7 +496,7 @@ public class MainActivity extends AppCompatActivity implements
             int[] poke_list = data.distribution.get(block);
             mPokemonRank = poke_list[number];
             Cursor cursor = pokedb.query(PokemonContract.Pokemon.TABLE_NAME,
-                    new String[]{PokemonContract.Pokemon.LEVEL1},
+                    new String[]{PokemonContract.Pokemon.LEVEL1, PokemonContract.Pokemon.TYPE_ID},
                     PokemonContract.Pokemon.RANK + "=?",
                     new String[]{Integer.toString(poke_list[number])},
                     null,
@@ -506,6 +504,8 @@ public class MainActivity extends AppCompatActivity implements
                     null);
             cursor.moveToFirst();
             mPokemonName = cursor.getString(0);
+            mPokemonTypeID = cursor.getInt(1);
+
             Log.i("name", mPokemonName);
 
             mPokemonImageView = (ImageView) findViewById(R.id.pokemon_image);
@@ -522,6 +522,7 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(this, Pokeball.class);
         intent.putExtra("pokemon", mPokemonName);
         intent.putExtra("rank", mPokemonRank);
+        intent.putExtra("type_ID", mPokemonTypeID);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
 //        Toast.makeText(this, "Pokemon Caught", Toast.LENGTH_SHORT).show();
