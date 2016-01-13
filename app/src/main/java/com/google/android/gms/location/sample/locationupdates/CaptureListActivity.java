@@ -30,12 +30,6 @@ public class CaptureListActivity extends ListActivity{
         setContentView(R.layout.activity_list);
         mActivity = this;
 
-        ProgressBar progressBar = new ProgressBar(this);
-        progressBar.setLayoutParams(new DrawerLayout.LayoutParams(DrawerLayout.LayoutParams.WRAP_CONTENT,
-                DrawerLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
-        progressBar.setIndeterminate(true);
-        getListView().setEmptyView(progressBar);
-
         String[] queryColumns = {CaptureList._ID,
                 CaptureList.NAME,
                 CaptureList.RANK,
@@ -96,10 +90,6 @@ public class CaptureListActivity extends ListActivity{
                 }
             }
         };
-
-        // Must add the progress bar to the root of the layout
-        ViewGroup root = (ViewGroup) findViewById(R.id.content);
-        root.addView(progressBar);
 
         SQLiteDatabase db = (new PokemonDatabase(this)).getReadableDatabase();
         Cursor cursor = db.query(CaptureList.TABLE_NAME,

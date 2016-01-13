@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
@@ -24,6 +25,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -105,6 +108,11 @@ public class MainActivity extends AppCompatActivity implements
      * Time when the location was updated represented as a String.
      */
     protected String mLastUpdateTime;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +156,9 @@ public class MainActivity extends AppCompatActivity implements
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
         // API.
         buildGoogleApiClient();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -204,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
-    public void isGPSEnable(){
+    public void isGPSEnable() {
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         boolean enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (!enabled) {
@@ -352,11 +363,11 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void togglePokeballButtonsStates(){
-        if (mPokeballButton.isEnabled() && mSearchPokemonButton.isEnabled()){
+    private void togglePokeballButtonsStates() {
+        if (mPokeballButton.isEnabled() && mSearchPokemonButton.isEnabled()) {
             mPokeballButton.setEnabled(false);
             mSearchPokemonButton.setEnabled(false);
-        }else {
+        } else {
             mPokeballButton.setEnabled(true);
             mSearchPokemonButton.setEnabled(true);
         }
@@ -390,7 +401,23 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
         mGoogleApiClient.connect();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.google.android.gms.location.sample.locationupdates/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
     }
 
     @Override
@@ -419,6 +446,22 @@ public class MainActivity extends AppCompatActivity implements
         mGoogleApiClient.disconnect();
 
         super.onStop();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.google.android.gms.location.sample.locationupdates/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.disconnect();
     }
 
     /**
@@ -465,60 +508,65 @@ public class MainActivity extends AppCompatActivity implements
                 Toast.LENGTH_SHORT).show();
     }
 
-    public void usePokeballButtonHandler(){
-
-    }
-
     public void findPokemon() {
 
-        double latdiff = mCenterLocation.getLatitude()-mCurrentLocation.getLatitude();
-        double longdiff = mCenterLocation.getLongitude()-mCurrentLocation.getLongitude();
+        double latdiff = mCenterLocation.getLatitude() - mCurrentLocation.getLatitude();
+        double longdiff = mCenterLocation.getLongitude() - mCurrentLocation.getLongitude();
         double unit = 0.005;
-        int x = (int)round(latdiff/unit)+2;
-        int y = (int)round(longdiff/unit)+2;
+        int x = (int) round(latdiff / unit) + 2;
+        int y = (int) round(longdiff / unit) + 2;
         int block = x + 4 * y;
-        block = ((block %16) + 16) % 16 ;
-        Log.i("coin", "latcenter : "+mCenterLocation.getLatitude() +
-                "longcenter"+mCenterLocation.getLongitude());
-        Log.i("coin", "x : "+x+" y : "+y+" block : "+block);
+        block = ((block % 16) + 16) % 16;
+        Log.i("coin", "latcenter : " + mCenterLocation.getLatitude() +
+                "longcenter" + mCenterLocation.getLongitude());
+        Log.i("coin", "x : " + x + " y : " + y + " block : " + block);
 
         Random random = new Random();
         Data data = new Data();
         SQLiteDatabase pokedb = (new PokemonDatabase(getApplicationContext())).getWritableDatabase();
         int coin = random.nextInt(1);
-        boolean test = coin==0 && block>-1 && block<16;
+        boolean test = coin == 0 && block > -1 && block < 16;
         //Log.i("coin", "value : "+coin+" block : "+block+" test : "+test);
 
-        if(test) {
+        if (test) {
             Log.i("coin", "inside");
             stopLocationUpdates();
             int number = random.nextInt(data.distribution.get(block).length);
             int[] poke_list = data.distribution.get(block);
             mPokemonRank = poke_list[number];
-            Cursor cursor = pokedb.query(PokemonContract.Pokemon.TABLE_NAME,
-                    new String[]{PokemonContract.Pokemon.LEVEL1, PokemonContract.Pokemon.TYPE_ID},
-                    PokemonContract.Pokemon.RANK + "=?",
-                    new String[]{Integer.toString(poke_list[number])},
+            Cursor cursor = pokedb.query(PokemonContract.CaptureList.TABLE_NAME,
+                    new String[]{PokemonContract.CaptureList.RANK},
+                    PokemonContract.CaptureList.RANK + "=?",
+                    new String[]{"" + mPokemonRank},
                     null,
                     null,
                     null);
-            cursor.moveToFirst();
-            mPokemonName = cursor.getString(0);
-            mPokemonTypeID = cursor.getInt(1);
+            if (cursor.getCount() == 0) {
+                cursor = pokedb.query(PokemonContract.Pokemon.TABLE_NAME,
+                        new String[]{PokemonContract.Pokemon.LEVEL1, PokemonContract.Pokemon.TYPE_ID},
+                        PokemonContract.Pokemon.RANK + "=?",
+                        new String[]{Integer.toString(poke_list[number])},
+                        null,
+                        null,
+                        null);
+                cursor.moveToFirst();
+                mPokemonName = cursor.getString(0);
+                mPokemonTypeID = cursor.getInt(1);
+                cursor.close();
+                Log.i("name", mPokemonName);
 
-            Log.i("name", mPokemonName);
-
-            mPokemonImageView = (ImageView) findViewById(R.id.pokemon_image);
-            mPokemonImageView.setImageDrawable(Data.findImageByName(mPokemonName, this));
-            mPokeStatusTextView = (TextView) findViewById(R.id.pokemon_status);
-            mPokeStatusTextView.setText("You found " + mPokemonName + "!");
-            togglePokeballButtonsStates();
-        }else{
+                mPokemonImageView = (ImageView) findViewById(R.id.pokemon_image);
+                mPokemonImageView.setImageDrawable(Data.findImageByName(mPokemonName, this));
+                mPokeStatusTextView = (TextView) findViewById(R.id.pokemon_status);
+                mPokeStatusTextView.setText("You found " + mPokemonName + "!");
+                togglePokeballButtonsStates();
+            }
+        } else {
             mPokeStatusTextView.setText("No pokemon nearby");
         }
     }
 
-    public void usePokeballButtonHandler(View view){
+    public void usePokeballButtonHandler(View view) {
         Intent intent = new Intent(this, Pokeball.class);
         intent.putExtra("pokemon", mPokemonName);
         intent.putExtra("rank", mPokemonRank);
@@ -530,7 +578,7 @@ public class MainActivity extends AppCompatActivity implements
 //        togglePokeballButtonsStates();
     }
 
-    public void searchPokemonButtonHandler(View view){
+    public void searchPokemonButtonHandler(View view) {
         mPokemonImageView.setImageDrawable(Data.findImageByName("pokeball", this));
         mPokeStatusTextView.setText("Searching for Pokemon");
         startLocationUpdates();
