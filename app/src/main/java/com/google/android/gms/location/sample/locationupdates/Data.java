@@ -42,4 +42,15 @@ public class Data {
                 activity.getApplicationContext().getPackageName());
         return resources.getDrawable(resourceId);
     }
+
+    public static String getTypeById(int id){
+        switch (id){
+            case 1:return "Fire";
+            case 2:return "Grass";
+            case 3:return "Water";
+            case 4:return "Rock";
+            case 5:return "Electric";
+            default:return "Unknown";
+        }
+    }
 }

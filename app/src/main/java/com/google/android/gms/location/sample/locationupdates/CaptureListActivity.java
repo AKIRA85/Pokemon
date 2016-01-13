@@ -3,6 +3,7 @@ package com.google.android.gms.location.sample.locationupdates;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
@@ -13,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -109,5 +111,13 @@ public class CaptureListActivity extends ListActivity{
         setListAdapter(mAdapter);
     }
 
-
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        Intent intent = new Intent(this, DetailActivity.class);
+        String temp = ((TextView)v.findViewById(R.id.pokemon_rank)).getText().toString();
+        int rank = Integer.parseInt(temp.substring(temp.lastIndexOf(" ")+1));
+        intent.putExtra("pokemon_rank", rank);
+        startActivity(intent);
+    }
 }
