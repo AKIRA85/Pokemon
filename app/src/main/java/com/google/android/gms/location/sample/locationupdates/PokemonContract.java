@@ -30,5 +30,6 @@ public final class PokemonContract {
         public static final String LEVEL = "Level";
         public static final String NAME = "Name";
         public static final String TYPE_ID = "Type_ID";
+        public static final String TIME = "TimeStamp";
     }
 }

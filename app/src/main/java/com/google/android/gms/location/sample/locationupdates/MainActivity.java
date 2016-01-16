@@ -62,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements
     protected final static String LOCATION_KEY = "location-key";
     protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
     protected final static String POKEMON_FOUND_STATUS_STRING_KEY = "pokemon-found-status-string-key";
+    protected final static String POKEMON_RANK = "pokemon-rank";
+    protected final static String POKEMON_NAME = "pokemon-name";
+    protected final static String POKEMON_TYPE = "pokemon-type";
     /**
      * Provides the entry point to Google Play services.
      */
@@ -142,7 +145,8 @@ public class MainActivity extends AppCompatActivity implements
         mPokeballButton = (Button) findViewById(R.id.use_pokeball_button);
         mSearchPokemonButton = (Button) findViewById(R.id.search_pokemon_button);
         mPokeStatusTextView = (TextView) findViewById(R.id.pokemon_status);
-
+        mPokemonImageView = (ImageView) findViewById(R.id.pokemon_image);
+        mPokeStatusTextView = (TextView) findViewById(R.id.pokemon_status);
         // Set labels.
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
         mLongitudeLabel = getResources().getString(R.string.longitude_label);
@@ -154,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements
         // Update values using data stored in the Bundle.
         mCenterLocation = new Location("developer");
         updateValuesFromBundle(savedInstanceState);
+        updateUI();
         mCenterLocation.setLatitude(25.547693);
         mCenterLocation.setLongitude(84.839784);
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
@@ -247,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void updateValuesFromBundle(Bundle savedInstanceState) {
         Log.i(TAG, "Updating values from bundle");
+        Log.i("bundle", "Updating values from bundle");
         if (savedInstanceState != null) {
             // Update the value of mRequestingLocationUpdates from the Bundle, and make sure that
             // the Start Updates and Stop Updates buttons are correctly enabled or disabled.
@@ -271,7 +277,14 @@ public class MainActivity extends AppCompatActivity implements
             }
 
             if (savedInstanceState.keySet().contains(POKEMON_FOUND_STATUS_STRING_KEY)) {
-                mPokemonFound = Boolean.parseBoolean(savedInstanceState.getString(POKEMON_FOUND_STATUS_STRING_KEY));
+                mPokemonFound = savedInstanceState.getBoolean(POKEMON_FOUND_STATUS_STRING_KEY);
+                Log.i("bundle", "found value present");
+            }
+            Log.i("bundle", "found "+mPokemonFound);
+            if(mPokemonFound){
+                mPokemonRank = savedInstanceState.getInt(POKEMON_RANK);
+                mPokemonName = savedInstanceState.getString(POKEMON_NAME);
+                mPokemonTypeID = savedInstanceState.getInt(POKEMON_TYPE);
             }
             updateUI();
         }
@@ -282,13 +295,15 @@ public class MainActivity extends AppCompatActivity implements
      * LocationServices API.
      */
     protected synchronized void buildGoogleApiClient() {
-        Log.i(TAG, "Building GoogleApiClient");
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        createLocationRequest();
+        if (mGoogleApiClient==null){
+            Log.i(TAG, "Building GoogleApiClient");
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+            createLocationRequest();
+        }
     }
 
     /**
@@ -351,8 +366,10 @@ public class MainActivity extends AppCompatActivity implements
     protected void startLocationUpdates() {
         // The final argument to {@code requestLocationUpdates()} is a LocationListener
         // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
+        if(!mPokemonFound){
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+        }
     }
 
     /**
@@ -371,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void togglePokeballButtonsStates() {
-        if (mPokeballButton.isEnabled() && mSearchPokemonButton.isEnabled()) {
+        if (!mPokemonFound) {
             mPokeballButton.setEnabled(false);
             mSearchPokemonButton.setEnabled(false);
         } else {
@@ -392,6 +409,16 @@ public class MainActivity extends AppCompatActivity implements
             mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel,
                     mLastUpdateTime));
         }
+        if(mPokemonFound){
+            mPokemonImageView.setImageDrawable(Data.findImageByName(mPokemonName, this));
+            mPokeStatusTextView.setText("You found " + mPokemonName + "!");
+            togglePokeballButtonsStates();
+        }
+    }
+
+    public void refreshButtonHandler(View view){
+        stopUpdatesButtonHandler(view);
+        startUpdatesButtonHandler(view);
     }
 
     /**
@@ -566,10 +593,7 @@ public class MainActivity extends AppCompatActivity implements
                 cursor.close();
                 Log.i("name", mPokemonName);
 
-                mPokemonImageView = (ImageView) findViewById(R.id.pokemon_image);
-                mPokemonImageView.setImageDrawable(Data.findImageByName(mPokemonName, this));
-                mPokeStatusTextView = (TextView) findViewById(R.id.pokemon_status);
-                mPokeStatusTextView.setText("You found " + mPokemonName + "!");
+                updateUI();
                 togglePokeballButtonsStates();
             }
         } else {
@@ -618,10 +642,17 @@ public class MainActivity extends AppCompatActivity implements
      * Stores activity data in the Bundle.
      */
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        Log.i("bundle", "saving values to bundle");
         savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
         savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
         savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
-        savedInstanceState.putString(POKEMON_FOUND_STATUS_STRING_KEY, mPokemonFound.toString());
+        savedInstanceState.putBoolean(POKEMON_FOUND_STATUS_STRING_KEY, mPokemonFound);
+        Log.i("bundle", "found "+mPokemonFound);
+        if(mPokemonFound){
+            savedInstanceState.putInt(POKEMON_RANK, mPokemonRank);
+            savedInstanceState.putString(POKEMON_NAME, mPokemonName);
+            savedInstanceState.putInt(POKEMON_TYPE, mPokemonTypeID);
+        }
         super.onSaveInstanceState(savedInstanceState);
     }
 }

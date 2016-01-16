@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.location.sample.locationupdates.PokemonContract.*;
 
+import java.util.Date;
+
 public class Pokeball extends ActionBarActivity {
 
     Intent mIntent;
@@ -30,12 +32,16 @@ public class Pokeball extends ActionBarActivity {
         SQLiteDatabase db = (new PokemonDatabase(this)).getWritableDatabase();
         int rank = mIntent.getIntExtra("rank", 0);
         int typeID = mIntent.getIntExtra("type_ID", 0);
+        Date date = new Date();
+        String strDate = date.toString();
         ContentValues contentValues = new ContentValues();
         contentValues.put(CaptureList.RANK, rank);
         contentValues.put(CaptureList.LEVEL, 1);
         contentValues.put(CaptureList.NAME, mPokemonName);
         contentValues.put(CaptureList.TYPE_ID, typeID);
-        db.insert(CaptureList.TABLE_NAME, null, contentValues );
+        contentValues.put(CaptureList.TIME, strDate);
+        long row = db.insert(CaptureList.TABLE_NAME, null, contentValues );
+        Log.i("insert", "success "+row);
         Intent intent = new Intent(this, Success.class);
         intent.putExtra("from", "pokeball");
         intent.putExtra("message", "Congratulation!! You caught ");

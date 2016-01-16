@@ -66,7 +66,8 @@ public class PokemonDatabase extends SQLiteOpenHelper {
                     CaptureList.RANK + " INT, " +
                     CaptureList.LEVEL + " INT," +
                     CaptureList.NAME + " TEXT," +
-                    CaptureList.TYPE_ID + " INT" +
+                    CaptureList.TYPE_ID + " INT," +
+                    CaptureList.TIME + " TEXT" +
                     " );";
 
 
