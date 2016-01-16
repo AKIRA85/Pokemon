@@ -31,7 +31,7 @@ public class PokemonDatabase extends SQLiteOpenHelper {
                     "( '2',     'Cyndaquil',    'Quilava',      'Typhlosion',   '1' ), "+
                     "( '3',     'Magby',        'Magmar',       'Magmortar',    '1' ), "+
                     "( '4',     'Bulbasaur',    'Ivysaur',      'Venusaur',     '2' ), "+
-                    "( '5',     'Bellsprout',   'Weepinbell',   'Victreebell',  '2' ), "+
+                    "( '5',     'Bellsprout',   'Weepinbell',   'Victreebel',  '2' ), "+
                     "( '6',     'Oddish',       'Gloom',        'Vileplum',     '2' ), "+
                     "( '7',     'Squirtle',     'Wartortle',    'Blastoise',    '3' ), "+
                     "( '8',     'Horsea',       'Seadra',       'Kingdra',      '3' ), "+

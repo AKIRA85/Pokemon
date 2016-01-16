@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements
     protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
     protected final static String LOCATION_KEY = "location-key";
     protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
-
+    protected final static String POKEMON_FOUND_STATUS_STRING_KEY = "pokemon-found-status-string-key";
     /**
      * Provides the entry point to Google Play services.
      */
@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements
      * Start Updates and Stop Updates buttons.
      */
     protected Boolean mRequestingLocationUpdates;
+    protected Boolean mPokemonFound=false;
+    boolean mGPSEnabled=false;
 
     /**
      * Time when the location was updated represented as a String.
@@ -117,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mPokemonFound=false;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -217,8 +220,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public void isGPSEnable() {
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
-        boolean enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (!enabled) {
+        mGPSEnabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (!mGPSEnabled) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                     this);
             alertDialogBuilder
@@ -265,6 +268,10 @@ public class MainActivity extends AppCompatActivity implements
             // Update the value of mLastUpdateTime from the Bundle and update the UI.
             if (savedInstanceState.keySet().contains(LAST_UPDATED_TIME_STRING_KEY)) {
                 mLastUpdateTime = savedInstanceState.getString(LAST_UPDATED_TIME_STRING_KEY);
+            }
+
+            if (savedInstanceState.keySet().contains(POKEMON_FOUND_STATUS_STRING_KEY)) {
+                mPokemonFound = Boolean.parseBoolean(savedInstanceState.getString(POKEMON_FOUND_STATUS_STRING_KEY));
             }
             updateUI();
         }
@@ -377,12 +384,14 @@ public class MainActivity extends AppCompatActivity implements
      * Updates the latitude, the longitude, and the last location time in the UI.
      */
     private void updateUI() {
-        mLatitudeTextView.setText(String.format("%s: %f", mLatitudeLabel,
-                mCurrentLocation.getLatitude()));
-        mLongitudeTextView.setText(String.format("%s: %f", mLongitudeLabel,
-                mCurrentLocation.getLongitude()));
-        mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel,
-                mLastUpdateTime));
+        if(mCurrentLocation != null){
+            mLatitudeTextView.setText(String.format("%s: %f", mLatitudeLabel,
+                    mCurrentLocation.getLatitude()));
+            mLongitudeTextView.setText(String.format("%s: %f", mLongitudeLabel,
+                    mCurrentLocation.getLongitude()));
+            mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel,
+                    mLastUpdateTime));
+        }
     }
 
     /**
@@ -427,7 +436,7 @@ public class MainActivity extends AppCompatActivity implements
         // connection to GoogleApiClient intact.  Here, we resume receiving
         // location updates if the user has requested them.
         isGPSEnable();
-        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
+        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates && !mPokemonFound && mGPSEnabled) {
             startLocationUpdates();
         }
     }
@@ -500,6 +509,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onLocationChanged(Location location) {
+        Log.i("change", "yes");
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         updateUI();
@@ -542,6 +552,7 @@ public class MainActivity extends AppCompatActivity implements
                     null,
                     null);
             if (cursor.getCount() == 0) {
+                mPokemonFound = true;
                 cursor = pokedb.query(PokemonContract.Pokemon.TABLE_NAME,
                         new String[]{PokemonContract.Pokemon.LEVEL1, PokemonContract.Pokemon.TYPE_ID},
                         PokemonContract.Pokemon.RANK + "=?",
@@ -571,6 +582,7 @@ public class MainActivity extends AppCompatActivity implements
         intent.putExtra("pokemon", mPokemonName);
         intent.putExtra("rank", mPokemonRank);
         intent.putExtra("type_ID", mPokemonTypeID);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
 //        Toast.makeText(this, "Pokemon Caught", Toast.LENGTH_SHORT).show();
@@ -581,6 +593,7 @@ public class MainActivity extends AppCompatActivity implements
     public void searchPokemonButtonHandler(View view) {
         mPokemonImageView.setImageDrawable(Data.findImageByName("pokeball", this));
         mPokeStatusTextView.setText("Searching for Pokemon");
+        mPokemonFound = false;
         startLocationUpdates();
         togglePokeballButtonsStates();
     }
@@ -608,6 +621,7 @@ public class MainActivity extends AppCompatActivity implements
         savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
         savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
         savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
+        savedInstanceState.putString(POKEMON_FOUND_STATUS_STRING_KEY, mPokemonFound.toString());
         super.onSaveInstanceState(savedInstanceState);
     }
 }

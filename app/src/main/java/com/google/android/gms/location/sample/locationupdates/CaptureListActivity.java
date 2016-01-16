@@ -10,7 +10,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -55,6 +57,7 @@ public class CaptureListActivity extends ListActivity{
 
                 if(id == R.id.pokemon_image){
                     String pokemonName = cursor.getString(columnIndex);
+                    Log.i("image", pokemonName);
                     Drawable drawable = Data.findImageByName(pokemonName, mActivity);
                     ImageView imageView = (ImageView) view;
                     imageView.setImageDrawable(drawable);
@@ -114,9 +117,9 @@ public class CaptureListActivity extends ListActivity{
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Intent intent = new Intent(this, DetailActivity.class);
         String temp = ((TextView)v.findViewById(R.id.pokemon_rank)).getText().toString();
         int rank = Integer.parseInt(temp.substring(temp.lastIndexOf(" ")+1));
+        Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra("pokemon_rank", rank);
         startActivity(intent);
     }

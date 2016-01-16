@@ -48,8 +48,13 @@ limitations under the License.
         <activity
             android:name=".CaptureListActivity"
             android:label="Capture List"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
-        <activity android:name=".DetailActivity"></activity>
+        <activity
+            android:name=".DetailActivity"
+            android:parentActivityName=".CaptureListActivity"/>
+        <activity
+            android:name=".EvolveActivity" />
     </application>
 
 </manifest>
