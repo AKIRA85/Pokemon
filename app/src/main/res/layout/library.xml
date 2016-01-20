@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Resistor"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:drawableBottom="@drawable/resistor"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text="Resistance/30 = x ohm\n(Hint- If X is 20000 ohm then X is 20k)\nGo to where you can lots of X."/>
+
+</LinearLayout>
