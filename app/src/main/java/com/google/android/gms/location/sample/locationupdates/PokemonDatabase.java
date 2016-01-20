@@ -70,6 +70,31 @@ public class PokemonDatabase extends SQLiteOpenHelper {
                     CaptureList.TIME + " TEXT" +
                     " );";
 
+    private static final String QUESTION_TABLE_CREATE =
+            "CREATE TABLE " + QuestionList.TABLE_NAME + " (" +
+                    QuestionList._ID + " INT, " +
+                    QuestionList.QNO + " INT, " +
+                    QuestionList.QUESTION + " TEXT, " +
+                    QuestionList.ANSWER + " TEXT, " +
+                    QuestionList.IMAGE + " INT, " +
+                    QuestionList.SCORE + " INT" +
+                    " );";
+
+    private static final String QUESTION_TABLE_INSERT =
+            "INSERT INTO " + QuestionList.TABLE_NAME +
+                    " (" + QuestionList.QNO + ", " +
+                    QuestionList.QUESTION +", " +
+                    QuestionList.ANSWER +", " +
+                    QuestionList.IMAGE +", " +
+                    QuestionList.SCORE +")" + " VALUES " +
+                    "( '1', 'A (digital) color image is a digital image that includes color information " +
+                    "       for each pixel.For visually acceptable results, it is necessary (and almost sufficient) " +
+                    "to provide three samples (color channels) for each pixel, which are interpreted as coordinates in some color space. The (Ans1)________ color space is commonly used in computer displays, but other spaces such as YCbCr, HSV, and are often used in other contexts. A color image has (Ans-2)______ values per pixel and they measure the intensity and chrominance of light. The actual information stored in the digital image data is the brightness information in each spectral band.'), " +
+                    "( '2', 'Grass' ), " +
+                    "( '3', 'Water' ), " +
+                    "( '4', 'Rock' ), " +
+                    "( '5', 'Electric' )" +
+                    ";";
 
     public PokemonDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -82,6 +107,7 @@ public class PokemonDatabase extends SQLiteOpenHelper {
         db.execSQL(POKEMON_TABLE_INSERT);
         db.execSQL(TYPE_TABLE_INSERT);
         db.execSQL(CAPTURE_TABLE_CREATE);
+        db.execSQL(QUESTION_TABLE_CREATE);
     }
 
     @Override

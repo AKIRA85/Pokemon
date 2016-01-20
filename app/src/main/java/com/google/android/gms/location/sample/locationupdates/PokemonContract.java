@@ -32,4 +32,20 @@ public final class PokemonContract {
         public static final String TYPE_ID = "Type_ID";
         public static final String TIME = "TimeStamp";
     }
+
+    public static abstract class QuestionList implements BaseColumns{
+        public static final String TABLE_NAME = "QuestionList";
+        public static final String QNO = "q_no";
+        public static final String QUESTION = "question";
+        public static final String ANSWER = "answer";
+        public static final String IMAGE = "image";
+        public static final String SCORE = "score";
+    }
+
+    public static abstract class SolvedList implements BaseColumns{
+        public static final String TABLE_NAME = "SolvedList";
+        public static final String QNO = "q_no";
+        public static final String TIME = "TimeStamp";
+        public static final String SCORE = "score";
+    }
 }

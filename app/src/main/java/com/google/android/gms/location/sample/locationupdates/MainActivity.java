@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements
      * Represents a geographical location.
      */
     protected Location mCurrentLocation;
-    protected Location mCenterLocation;
+    protected Location mCornerLocation;
 
     // UI Widgets.
     protected Button mStartUpdatesButton;
@@ -156,11 +156,11 @@ public class MainActivity extends AppCompatActivity implements
         mLastUpdateTime = "";
 
         // Update values using data stored in the Bundle.
-        mCenterLocation = new Location("developer");
+        mCornerLocation = new Location("developer");
         updateValuesFromBundle(savedInstanceState);
         updateUI();
-        mCenterLocation.setLatitude(25.547693);
-        mCenterLocation.setLongitude(84.839784);
+        mCornerLocation.setLatitude(25.53);
+        mCornerLocation.setLongitude(84.845);
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
         // API.
         buildGoogleApiClient();
@@ -194,7 +194,8 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.master_settings) {
+
             return true;
         }
 
@@ -210,8 +211,9 @@ public class MainActivity extends AppCompatActivity implements
         if (id == R.id.nav_capture_list) {
             Intent intent = new Intent(this, CaptureListActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_manage) {
-
+        } else if (id == R.id.reset_button) {
+            DialogMaker dialogMaker = new DialogMaker();
+            dialogMaker.show(getSupportFragmentManager(), "reset_dialog");
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -268,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements
                 // Since LOCATION_KEY was found in the Bundle, we can be sure that mCurrentLocation
                 // is not null.
                 mCurrentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
-                mCenterLocation = mCurrentLocation;
+                mCornerLocation = mCurrentLocation;
             }
 
             // Update the value of mLastUpdateTime from the Bundle and update the UI.
@@ -547,25 +549,26 @@ public class MainActivity extends AppCompatActivity implements
 
     public void findPokemon() {
 
-        double latdiff = mCenterLocation.getLatitude() - mCurrentLocation.getLatitude();
-        double longdiff = mCenterLocation.getLongitude() - mCurrentLocation.getLongitude();
+        double latdiff = mCurrentLocation.getLatitude() - mCornerLocation.getLatitude();
+        double longdiff = mCurrentLocation.getLongitude() - mCornerLocation.getLongitude();
         double unit = 0.005;
-        int x = (int) round(latdiff / unit) + 2;
-        int y = (int) round(longdiff / unit) + 2;
-        int block = x + 4 * y;
-        block = ((block % 16) + 16) % 16;
-        Log.i("coin", "latcenter : " + mCenterLocation.getLatitude() +
-                "longcenter" + mCenterLocation.getLongitude());
+        int x = (int) round(longdiff / unit);
+        int y = (int) round(latdiff / unit);
+        int block = x + 3 * y;
+        block = ((block % 15) + 15) % 15;
+        Log.i("coin", "latcenter : " + mCurrentLocation.getLatitude() +
+                "longcenter" + mCurrentLocation.getLongitude());
         Log.i("coin", "x : " + x + " y : " + y + " block : " + block);
 
         Random random = new Random();
         Data data = new Data();
         SQLiteDatabase pokedb = (new PokemonDatabase(getApplicationContext())).getWritableDatabase();
         int coin = random.nextInt(1);
-        boolean test = coin == 0 && block > -1 && block < 16;
+        int densityPokemon = data.distribution.get(block).length;
+        boolean test = (coin == 0 && block > -1 && block < 16);
         //Log.i("coin", "value : "+coin+" block : "+block+" test : "+test);
 
-        if (test) {
+        if (test && densityPokemon>0) {
             Log.i("coin", "inside");
             stopLocationUpdates();
             int number = random.nextInt(data.distribution.get(block).length);

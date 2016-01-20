@@ -7,9 +7,8 @@
             android:id="@+id/nav_capture_list"
             android:title="Capture List" />
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/reset_button"
+            android:title="Reset App" />
     </group>
 
     <item android:title="Communicate">

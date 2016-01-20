@@ -34,4 +34,14 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_capture_list">CaptureList</string>
+
+    <!--added by owner-->
+    <string name="reset_message">The App was reset</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    
+    <!--Questions-->
+
+
 </resources>
