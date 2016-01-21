@@ -14,6 +14,7 @@ import java.util.Map;
 public class Data {
 
     protected Map<Integer, int[]> distribution = new HashMap<Integer, int[]>();
+    protected Map<String, Integer> action = new HashMap<String, Integer>();
 
     Data(){
         distribution.put(0, new int[] {1, 2, 3});
@@ -31,6 +32,22 @@ public class Data {
         distribution.put(12, new int[] {13, 14, 15});
         distribution.put(13, new int[] {13, 14, 15});
         distribution.put(14, new int[] {13, 14, 15});
+
+        action.put("1_1", 101); action.put("1_2", 1); action.put("1_3", 2);
+        action.put("2_1", 106); action.put("2_2", 3); action.put("2_3", 4);
+        action.put("3_1", 5); action.put("3_2", 6); action.put("3_3", 7);
+        action.put("4_1", 103); action.put("4_2", 8); action.put("4_3", 9);
+        action.put("5_1", 10); action.put("5_2", 11); action.put("5_3", 12);
+        action.put("6_1", 13); action.put("6_2", 19); action.put("6_3", 20);
+        action.put("7_1", 102); action.put("7_2", 22); action.put("7_3", 21);
+        action.put("8_1", 14); action.put("8_2", 23); action.put("8_3", 24);
+        action.put("9_1", 15); action.put("9_2", 26); action.put("9_3", 25);
+        action.put("10_1", 104); action.put("10_2", 27); action.put("10_3", 28);
+        action.put("11_1", 16); action.put("11_2", 30); action.put("11_3", 29);
+        action.put("12_1", 17); action.put("12_2", 0); action.put("12_3", 0);
+        action.put("13_1", 105); action.put("13_2", 0); action.put("13_3", 0);
+        action.put("14_1", 107); action.put("14_2", 0); action.put("14_3", 0);
+        action.put("15_1", 18); action.put("15_2", 0); action.put("15_3", 0);
     }
 
     public static Drawable findImageByName(String name, Activity activity){
