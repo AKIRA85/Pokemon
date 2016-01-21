@@ -9,9 +9,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.sample.locationupdates.PokemonContract.*;
 
@@ -24,11 +27,16 @@ public class Pokeball extends ActionBarActivity {
     int mPokemonRank;
     Data mData = new Data();
     SQLiteDatabase mDB;
+    String mAnswer;
+    EditText mEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
+
+        mEditText = (EditText)findViewById(R.id.answer);
+
         mIntent = getIntent();
         int action=0;
         if(mIntent.hasExtra("pokemon")){
@@ -53,14 +61,16 @@ public class Pokeball extends ActionBarActivity {
                 null,
                 null,
                 null);
+        cursor.moveToFirst();
         if(cursor.getCount()!=1){
             Log.i("question", "number of questions not equal to 1");
         }else{
             Log.i("question", cursor.getString(0)+" qno "+action);
-            cursor.moveToFirst();
+            mAnswer = cursor.getString(2);
             int score = cursor.getInt(3);
             int layoutID=0;
             if (score==8){
+                mEditText.setHint("Enter Password");
                 switch (action){
                     case 101:layoutID = R.layout.canteen;
                         break;
@@ -78,36 +88,58 @@ public class Pokeball extends ActionBarActivity {
                         break;
                 }
                 View view = getLayoutInflater().inflate(layoutID, new LinearLayout(this));
-                ScrollView scrollView = (ScrollView) findViewById(R.id.task_window);
-                scrollView.addView(view);
+                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.task_window);
+                linearLayout.addView(view, 0);
+            }else{
+                View view = getLayoutInflater().inflate(R.layout.question, new LinearLayout(this));
+                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.task_window);
+                linearLayout.addView(view, 0);
+                mEditText.setHint("Enter Answer");
+                TextView textView = (TextView)findViewById(R.id.question);
+                textView.setText(cursor.getString(0));
+                if(cursor.getInt(1)!=0){
+                    Log.i("question", "image present");
+                    ImageView imageView = (ImageView)findViewById(R.id.q_image);
+                    imageView.setImageDrawable(Data.findImageByName("i"+action, this));
+                    imageView.setVisibility(View.VISIBLE);
+                }else{
+                    Log.i("question", "no image present");
+                }
             }
         }
 
     }
 
-    public void yesButtonHandler(View view){
+    public void submitButtonHandler(View view){
+        String input = mEditText.getText().toString();
+        input = input.replaceAll(" ", "");
+        if(input.equalsIgnoreCase(mAnswer)){
+            int rank = mIntent.getIntExtra("rank", 0);
+            int typeID = mIntent.getIntExtra("type_ID", 0);
+            Date date = new Date();
+            String strDate = date.toString();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(CaptureList.RANK, rank);
+            contentValues.put(CaptureList.LEVEL, 1);
+            contentValues.put(CaptureList.NAME, mPokemonName);
+            contentValues.put(CaptureList.TYPE_ID, typeID);
+            contentValues.put(CaptureList.TIME, strDate);
+            long row = mDB.insert(CaptureList.TABLE_NAME, null, contentValues );
+            Log.i("insert", "success "+row);
+            Intent intent = new Intent(this, Success.class);
+            intent.putExtra("from", "pokeball");
+            intent.putExtra("message", "Congratulation!! You caught ");
+            intent.putExtra("pokemon_name", mPokemonName);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }else{
+            Toast.makeText(this, "Sorry, wrong answer",
+                    Toast.LENGTH_SHORT).show();
+        }
 
-        int rank = mIntent.getIntExtra("rank", 0);
-        int typeID = mIntent.getIntExtra("type_ID", 0);
-        Date date = new Date();
-        String strDate = date.toString();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(CaptureList.RANK, rank);
-        contentValues.put(CaptureList.LEVEL, 1);
-        contentValues.put(CaptureList.NAME, mPokemonName);
-        contentValues.put(CaptureList.TYPE_ID, typeID);
-        contentValues.put(CaptureList.TIME, strDate);
-        long row = mDB.insert(CaptureList.TABLE_NAME, null, contentValues );
-        Log.i("insert", "success "+row);
-        Intent intent = new Intent(this, Success.class);
-        intent.putExtra("from", "pokeball");
-        intent.putExtra("message", "Congratulation!! You caught ");
-        intent.putExtra("pokemon_name", mPokemonName);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
     }
 
-    public void noButtonHandler(View view){
+    public void skipButtonHandler(View view){
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
