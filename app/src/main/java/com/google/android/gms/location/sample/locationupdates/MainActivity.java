@@ -214,8 +214,9 @@ public class MainActivity extends AppCompatActivity implements
         } else if (id == R.id.reset_button) {
             DialogMaker dialogMaker = new DialogMaker();
             dialogMaker.show(getSupportFragmentManager(), "reset_dialog");
-        } else if (id == R.id.nav_share) {
-
+        } else if (id == R.id.question_list) {
+            Intent intent = new Intent(this, QuestionListActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_send) {
 
         }
@@ -465,7 +466,7 @@ public class MainActivity extends AppCompatActivity implements
         // connection to GoogleApiClient intact.  Here, we resume receiving
         // location updates if the user has requested them.
         isGPSEnable();
-        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates && !mPokemonFound && mGPSEnabled) {
+        if (mGoogleApiClient.isConnected() && !mPokemonFound && mGPSEnabled) {
             startLocationUpdates();
         }
     }
