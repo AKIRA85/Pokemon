@@ -67,7 +67,8 @@ public class PokemonDatabase extends SQLiteOpenHelper {
                     CaptureList.LEVEL + " INT," +
                     CaptureList.NAME + " TEXT," +
                     CaptureList.TYPE_ID + " INT," +
-                    CaptureList.TIME + " TEXT" +
+                    CaptureList.TIME + " TEXT, " +
+                    CaptureList.CATEGORY + " INT"+
                     " );";
 
     private static final String QUESTION_TABLE_CREATE =
@@ -294,7 +295,7 @@ public class PokemonDatabase extends SQLiteOpenHelper {
                         " '4' " +
                         "), "+
                     "( '27', " +
-                        " 'invented the technology used for radio guidance system by Allied Forces Torpedoes.\n"+
+                        " 'she invented the technology used for radio guidance system by Allied Forces Torpedoes.\n"+
                         " It was called ________.', " +
                         " 'frequencyhoppingspreadspectrum', " +
                         " '1', " +
@@ -307,17 +308,53 @@ public class PokemonDatabase extends SQLiteOpenHelper {
                         " '4' " +
                         "), "+
                     "( '29', " +
-                    " '_______ blocks direct current but not alternating current', " +
-                    " 'capacitor', " +
-                    " '0', " +
-                    " '4' " +
-                    "), "+
+                        " '_______ blocks direct current but not alternating current', " +
+                        " 'capacitor', " +
+                        " '0', " +
+                        " '4' " +
+                        "), "+
                     "( '30', " +
-                    " '_______ measures g-force and can be easily found in any smart phone', " +
-                    " 'accelerometer', " +
-                    " '0', " +
-                    " '4' " +
-                    ");";
+                        " '_______ measures g-force and can be easily found in any smart phone', " +
+                        " 'accelerometer', " +
+                        " '0', " +
+                        " '4' " +
+                        "),"+
+                    "( '31', " +
+                        " '', " +
+                        " 'integratedcircuit', " +
+                        " '1', " +
+                        " '4' " +
+                        "), "+
+                    "( '32', " +
+                        " '', " +
+                        " 'opticalmouse', " +
+                        " '1', " +
+                        " '4' " +
+                        "), "+
+                    "( '33', " +
+                        " '', " +
+                        " 'wirelessfidelity', " +
+                        " '1', " +
+                        " '4' " +
+                        "), "+
+                    "( '34', " +
+                        " '', " +
+                        " 'bluetooth', " +
+                        " '1', " +
+                        " '4' " +
+                        "), "+
+                    "( '35', " +
+                        " '', " +
+                        " 'randomaccessmemory', " +
+                        " '1', " +
+                        " '4' " +
+                        "), "+
+                    "( '36', " +
+                        " '', " +
+                        " 'keyboard', " +
+                        " '1', " +
+                        " '4' " +
+                        "); ";
 
     public PokemonDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

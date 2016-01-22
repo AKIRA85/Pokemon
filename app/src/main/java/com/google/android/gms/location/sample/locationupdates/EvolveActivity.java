@@ -78,34 +78,9 @@ public class EvolveActivity extends AppCompatActivity {
         input = input.replaceAll(" ", "");
         if(input.equalsIgnoreCase(mAnswer)){
 
-            String column = "";
-            if(mLevel==1){
-                column = PokemonContract.Pokemon.LEVEL2;
-            }else if(mLevel == 2){
-                column = PokemonContract.Pokemon.LEVEL3;
-            }
-            //Query name of evolved form
-            Cursor cursor = mDB.query(Pokemon.TABLE_NAME,
-                    new String[]{column},
-                    PokemonContract.Pokemon.RANK+"=?",
-                    new String[]{""+mPokemonRank},
-                    null,
-                    null,
-                    null);
-            cursor.moveToFirst();
-            String pokemonNewName = cursor.getString(0);
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(PokemonContract.CaptureList.LEVEL, mLevel+1);
-            contentValues.put(PokemonContract.CaptureList.NAME, pokemonNewName);
+            String pokemonNewName = Data.actionEvolve(mDB, mPokemonRank, mLevel);
 
-            //Update CaptureList
-            int row = mDB.update(PokemonContract.CaptureList.TABLE_NAME,
-                    contentValues,
-                    PokemonContract.Pokemon.RANK+"=?",
-                    new String[]{""+mPokemonRank});
-
-
-            if(row==1){
+            if(pokemonNewName!=null){
                 Intent intent = new Intent(this, Success.class);
                 intent.putExtra("from", "evolve");
                 intent.putExtra("pokemon_rank", mPokemonRank);

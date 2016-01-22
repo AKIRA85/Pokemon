@@ -54,7 +54,11 @@ limitations under the License.
             android:name=".DetailActivity"
             android:parentActivityName=".CaptureListActivity" />
         <activity android:name=".EvolveActivity" />
-        <activity android:name=".QuestionListActivity"></activity>
+        <activity android:name=".QuestionListActivity" />
+        <activity
+            android:name=".GodActivity"
+            android:label="@string/title_activity_god"
+            android:theme="@style/Theme.Base.NoActionBar"></activity>
     </application>
 
 </manifest>

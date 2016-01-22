@@ -31,6 +31,7 @@ public final class PokemonContract {
         public static final String NAME = "Name";
         public static final String TYPE_ID = "Type_ID";
         public static final String TIME = "TimeStamp";
+        public static final String CATEGORY = "Category";
     }
 
     public static abstract class QuestionList implements BaseColumns{
